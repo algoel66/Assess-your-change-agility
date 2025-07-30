@@ -263,8 +263,6 @@
     function restartGame() {
         resultsScreen.classList.add('hidden');
         welcomeScreen.classList.remove('hidden');
-        // The name input will still have the previous name, allowing for a quick restart
-        // or the user can change it.
     }
 
     function showQuestion() {
@@ -273,17 +271,14 @@
             return;
         }
 
-        // Update progress
         const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
         questionCounter.textContent = `Question ${currentQuestionIndex + 1} / ${questions.length}`;
         progressBar.style.width = `${progress}%`;
 
-        // Display question
         const question = questions[currentQuestionIndex];
         scenarioText.textContent = question.scenario;
         optionsContainer.innerHTML = '';
         
-        // Shuffle options to avoid order bias
         const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
 
         shuffledOptions.forEach(option => {
@@ -296,15 +291,12 @@
     }
 
     function selectOption(skill, selectedButton) {
-        // Increment score
         scores[skill]++;
         
-        // Visual feedback
         const buttons = optionsContainer.querySelectorAll('.btn');
-        buttons.forEach(btn => btn.disabled = true); // Disable all buttons
+        buttons.forEach(btn => btn.disabled = true);
         selectedButton.classList.add('selected');
 
-        // Move to next question after a short delay
         setTimeout(() => {
             currentQuestionIndex++;
             showQuestion();
@@ -317,6 +309,21 @@
         resultsTitle.textContent = `${playerName}'s Change Agility Profile`;
         renderChart();
         renderSkillBreakdown();
+
+        // --- EDITED SECTION: Communicate with Captivate ---
+        try {
+            // Check if the game is running inside a Captivate web object
+            if (window.parent && window.parent.cp) {
+                // Set the Captivate variable to 1 to signify completion
+                window.parent.cp.setVariableValue('v_WebObjectComplete', 1);
+                console.log("Successfully set Captivate variable 'v_WebObjectComplete' to 1.");
+            } else {
+                console.log("Captivate environment not found. Running in standalone mode.");
+            }
+        } catch (e) {
+            console.error("Error communicating with Captivate:", e);
+        }
+        // --- END EDITED SECTION ---
     }
     
     function renderChart() {
@@ -364,7 +371,7 @@
                             }
                         },
                         min: 0,
-                        max: Math.max(...Object.values(scores), 3) // Ensure scale is at least 3
+                        max: Math.max(...Object.values(scores), 3)
                     }
                 },
                 plugins: {
