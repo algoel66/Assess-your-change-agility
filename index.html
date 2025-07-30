@@ -21,18 +21,15 @@
         .card {
             background-color: white;
             border-radius: 1.5rem;
-            padding: 2rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            /* MODIFICATION: Removed max-height. The parent container will now control the height. */
         }
         .btn {
             display: block;
             width: 100%;
             text-align: left;
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             border-radius: 0.75rem;
             border: 1px solid #e5e7eb;
             background-color: #f9fafb;
@@ -54,14 +51,15 @@
         .progress-bar-bg {
             background-color: #e5e7eb;
             border-radius: 9999px;
-            height: 0.75rem;
+            height: 0.5rem;
         }
         .progress-bar-fg {
             background-color: #3b82f6;
             border-radius: 9999px;
-            height: 0.75rem;
+            height: 0.5rem;
             transition: width 0.5s ease-in-out;
         }
+        /* Scrollbar for the results page content */
         .scrolling-content::-webkit-scrollbar {
             width: 8px;
         }
@@ -82,56 +80,50 @@
     <div id="game-container" class="max-w-2xl w-full h-full flex items-center p-4">
         
         <div id="welcome-screen" class="card w-full">
-            <div class="flex-shrink-0">
-                <h1 class="text-3xl text-center font-bold text-gray-800 mb-4">Change Agility Challenge</h1>
+            <h1 class="text-2xl text-center font-bold text-gray-800 mb-3">Change Agility Challenge</h1>
+            <p class="text-sm text-gray-600 mb-4">Test your skills in navigating the ever-changing landscape of today’s workplace. You will be presented with 10 scenarios. <strong>There are no right or wrong answers, choose the response that best reflects how you would act.</strong> </p>
+            <p class="text-sm text-gray-600 mb-4">Your results will reveal your strengths across five key skills.</p>
+            <div class="mb-4">
+                <input type="text" id="name-input" placeholder="Enter your name to begin" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-center text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <p id="name-error" class="text-red-500 text-xs mt-1 hidden">Please enter your name to start.</p>
             </div>
-            <div class="scrolling-content flex-grow min-h-0 overflow-y-auto pr-2">
-                <p class="text-gray-600 mb-6">Test your skills in navigating the ever-changing landscape of today’s workplace. You will be presented with 10 scenarios. <strong>There are no right or wrong answers, choose the response that best reflects how you would act.</strong> </p>
-                <p class="text-gray-600 mb-8">Your results will reveal your strengths across five key skills: Adaptability, Resilience, Change Leadership, Learning Agility, and Innovation.</p>
-            </div>
-            <div class="mt-auto flex-shrink-0">
-                <div class="mb-4">
-                    <input type="text" id="name-input" placeholder="Enter your name to begin" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <p id="name-error" class="text-red-500 text-sm mt-2 hidden">Please enter your name to start.</p>
-                </div>
-                <button id="start-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-transform transform hover:scale-105">Start the Challenge</button>
-            </div>
+            <button id="start-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg text-base transition-transform transform hover:scale-105">Start the Challenge</button>
         </div>
 
         <div id="game-screen" class="card hidden w-full">
-            <div class="flex-shrink-0">
-                <div class="mb-6">
-                    <p id="question-counter" class="text-sm font-medium text-gray-500 mb-2">Question 1 / 10</p>
-                    <div class="progress-bar-bg">
-                        <div id="progress-bar" class="progress-bar-fg" style="width: 10%;"></div>
-                    </div>
+            <div class="mb-4">
+                <p id="question-counter" class="text-xs font-medium text-gray-500 mb-1">Question 1 / 10</p>
+                <div class="progress-bar-bg">
+                    <div id="progress-bar" class="progress-bar-fg" style="width: 10%;"></div>
                 </div>
-                <h2 id="scenario-text" class="text-xl font-semibold text-gray-800 mb-6">Scenario text goes here.</h2>
             </div>
-            <div id="options-container" class="scrolling-content flex-grow min-h-0 overflow-y-auto space-y-4 pr-2">
+            <h2 id="scenario-text" class="text-lg font-semibold text-gray-800 mb-4">Scenario text goes here.</h2>
+            <div id="options-container" class="space-y-2">
                 </div>
         </div>
 
-        <div id="results-screen" class="card hidden w-full">
-            <div class="flex-shrink-0 text-center">
-                <h1 id="results-title" class="text-3xl font-bold text-gray-800 mb-4">Your Change Agility Profile</h1>
-                <p class="text-gray-600 mb-8">Here is a breakdown of your skills based on your responses. This profile highlights your strengths in navigating change.</p>
+        <div id="results-screen" class="card hidden w-full flex flex-col max-h-[90vh]">
+            <div class="flex-shrink-0">
+                <h1 id="results-title" class="text-3xl font-bold text-gray-800 mb-4 text-center">Your Change Agility Profile</h1>
+                <p class="text-gray-600 mb-8 text-center">Here is a breakdown of your skills based on your responses. This profile highlights your strengths in navigating change.</p>
             </div>
+            
             <div class="scrolling-content flex-grow min-h-0 overflow-y-auto pr-2">
-                <div class="w-full min-h-[320px] md:min-h-[384px] mx-auto mb-8">
+                <div class="w-full h-80 md:h-96 mx-auto mb-8">
                     <canvas id="results-chart"></canvas>
                 </div>
                 <div id="skill-breakdown" class="space-y-4">
                     </div>
             </div>
-            <div class="mt-auto flex-shrink-0">
-                <button id="restart-btn" class="mt-8 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-transform transform hover:scale-105">Play Again</button>
+
+            <div class="mt-auto flex-shrink-0 pt-4">
+                <button id="restart-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-transform transform hover:scale-105">Play Again</button>
             </div>
         </div>
     </div>
 
 <script>
-    // The JavaScript does not need any changes.
+    // --- DOM Elements ---
     const welcomeScreen = document.getElementById('welcome-screen');
     const gameScreen = document.getElementById('game-screen');
     const resultsScreen = document.getElementById('results-screen');
@@ -146,6 +138,8 @@
     const resultsChartCanvas = document.getElementById('results-chart');
     const resultsTitle = document.getElementById('results-title');
     const skillBreakdownContainer = document.getElementById('skill-breakdown');
+    
+    // MODIFICATION: Restored original SKILLS object
     const SKILLS = {
         ADAPTABILITY: 'Adaptability',
         RESILIENCE: 'Resilience',
@@ -153,6 +147,8 @@
         LEARNING_AGILITY: 'Learning Agility',
         INNOVATION: 'Innovation'
     };
+
+    // MODIFICATION: Restored original SKILL_DESCRIPTIONS object
     const SKILL_DESCRIPTIONS = {
         [SKILLS.ADAPTABILITY]: 'Having strength in this skill means readily adjusting your approach and mindset to fit new situations, embracing shifts in priorities and processes.',
         [SKILLS.RESILIENCE]: 'Having strength in this skill means maintaining a positive attitude and bouncing back quickly from setbacks, and viewing challenges as opportunities for growth.',
@@ -160,6 +156,7 @@
         [SKILLS.LEARNING_AGILITY]: 'Having strength in this skill means that being proactive about acquiring new knowledge and skills, actively seek feedback and learning from experiences.',
         [SKILLS.INNOVATION]: 'Having strength in this skill means thinking outside the box to generate novel ideas and creative solutions to complex problems.'
     };
+    
     const questions = [
         {
             scenario: "Your team's long-term project is suddenly canceled due to a shift in company strategy. How do you react?",
@@ -297,7 +294,7 @@
         const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
         shuffledOptions.forEach(option => {
             const button = document.createElement('button');
-            button.className = 'btn';
+            button.className = 'btn text-sm';
             button.textContent = option.text;
             button.onclick = () => selectOption(option.skill, button);
             optionsContainer.appendChild(button);
@@ -320,6 +317,8 @@
         renderChart();
         renderSkillBreakdown();
     }
+    
+    // MODIFICATION: Chart rendering restored to original
     function renderChart() {
         const data = {
             labels: Object.values(SKILLS),
@@ -343,45 +342,32 @@
                 maintainAspectRatio: false,
                 scales: {
                     r: {
-                        angleLines: {
-                            color: '#e5e7eb'
-                        },
-                        grid: {
-                            color: '#e5e7eb'
-                        },
+                        angleLines: { color: '#e5e7eb' },
+                        grid: { color: '#e5e7eb' },
                         pointLabels: {
-                            font: {
-                                size: 14,
-                                weight: '500'
-                            },
+                            font: { size: 14, weight: '500' },
                             color: '#374151'
                         },
                         ticks: {
                             backdropColor: 'transparent',
                             stepSize: 1,
-                            font: {
-                                size: 10
-                            }
+                            font: { size: 10 }
                         },
                         min: 0,
                         max: Math.max(...Object.values(scores), 3)
                     }
                 },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
+                plugins: { legend: { display: false } }
             }
         };
-        if (chartInstance) {
-            chartInstance.destroy();
-        }
+        if (chartInstance) chartInstance.destroy();
         chartInstance = new Chart(resultsChartCanvas, config);
     }
+
+    // MODIFICATION: Skill breakdown restored to original with full descriptions
     function renderSkillBreakdown() {
         skillBreakdownContainer.innerHTML = '';
-        const sortedSkills = Object.entries(scores).sort(([,a],[,b]) => b-a);
+        const sortedSkills = Object.entries(scores).sort(([, a], [, b]) => b - a);
         sortedSkills.forEach(([skill, score]) => {
             const skillElement = document.createElement('div');
             skillElement.className = 'p-4 border rounded-lg bg-gray-50';
@@ -393,6 +379,7 @@
             skillBreakdownContainer.appendChild(skillElement);
         });
     }
+
     startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', restartGame);
 </script>
