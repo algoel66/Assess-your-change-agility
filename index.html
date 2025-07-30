@@ -11,12 +11,18 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* MODIFICATION: Card is now a flex container, no manual overflow needed here */
         .card {
             background-color: white;
             border-radius: 1.5rem;
             padding: 2rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             transition: all 0.3s ease-in-out;
+            /* The card itself is now a flex column */
+            display: flex;
+            flex-direction: column;
+            /* Prevents the card from exceeding the container's height */
+            max-height: 95vh; 
         }
         .btn {
             display: block;
@@ -30,6 +36,8 @@
             color: #374151;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
+            /* Add flex-shrink to prevent buttons from growing too large */
+            flex-shrink: 0;
         }
         .btn:hover {
             background-color: #f3f4f6;
@@ -51,55 +59,77 @@
             height: 0.75rem;
             transition: width 0.5s ease-in-out;
         }
+        /* Custom scrollbar for the new scrollable areas */
+        .scrolling-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scrolling-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scrolling-content::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        .scrolling-content::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-    <div id="game-container" class="max-w-2xl w-full">
-        <!-- Welcome Screen -->
-        <div id="welcome-screen" class="card text-center">
-            <h1 class="text-3xl font-bold text-gray-800 mb-4">Change Agility Challenge</h1>
-            <p class="text-gray-600 mb-6">Test your skills in navigating the ever-changing landscape of the modern workplace. You will be presented with 10 scenarios. Choose the response that best reflects how you would act.</p>
-            <p class="text-gray-600 mb-8">Your results will reveal your strengths across five key skills: Adaptability, Resilience, Change Leadership, Learning Agility, and Innovation.</p>
-            
-            <!-- Name Input Field -->
-            <div class="mb-4">
-                <input type="text" id="name-input" placeholder="Enter your name to begin" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <p id="name-error" class="text-red-500 text-sm mt-2 hidden">Please enter your name to start.</p>
+    <div id="game-container" class="max-w-2xl w-full h-full flex items-center">
+        
+    <div id="welcome-screen" class="card w-full">
+            <div class="flex-shrink-0">
+                <h1 class="text-3xl text-center font-bold text-gray-800 mb-4">Change Agility Challenge</h1>
             </div>
-
-            <button id="start-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-transform transform hover:scale-105">Start the Challenge</button>
-        </div>
-
-        <!-- Game Screen -->
-        <div id="game-screen" class="card hidden">
-            <div class="mb-6">
-                <p id="question-counter" class="text-sm font-medium text-gray-500 mb-2">Question 1 / 10</p>
-                <div class="progress-bar-bg">
-                    <div id="progress-bar" class="progress-bar-fg" style="width: 10%;"></div>
+            <div class="scrolling-content flex-grow min-h-0 overflow-y-auto pr-2">
+                <p class="text-gray-600 mb-6">Test your skills in navigating the ever-changing landscape of today’s workplace. You will be presented with 10 scenarios. <strong>There are no right or wrong answers, choose the response that best reflects how you would act.</strong> </p>
+                <p class="text-gray-600 mb-8">Your results will reveal your strengths across five key skills: Adaptability, Resilience, Change Leadership, Learning Agility, and Innovation.</p>
+            </div>
+            <div class="mt-auto flex-shrink-0">
+                 <div class="mb-4">
+                    <input type="text" id="name-input" placeholder="Enter your name to begin" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <p id="name-error" class="text-red-500 text-sm mt-2 hidden">Please enter your name to start.</p>
                 </div>
-            </div>
-            <h2 id="scenario-text" class="text-xl font-semibold text-gray-800 mb-6">Scenario text goes here.</h2>
-            <div id="options-container" class="space-y-4">
-                <!-- Options will be dynamically inserted here -->
+                <button id="start-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-transform transform hover:scale-105">Start the Challenge</button>
             </div>
         </div>
 
-        <!-- Results Screen -->
-        <div id="results-screen" class="card hidden">
-            <h1 id="results-title" class="text-3xl font-bold text-gray-800 mb-4 text-center">Your Change Agility Profile</h1>
-            <p class="text-gray-600 mb-8 text-center">Here is a breakdown of your skills based on your responses. This profile highlights your strengths in navigating change.</p>
-            <div class="w-full h-80 md:h-96 mx-auto mb-8">
-                <canvas id="results-chart"></canvas>
+        <div id="game-screen" class="card hidden w-full">
+            <div class="flex-shrink-0">
+                <div class="mb-6">
+                    <p id="question-counter" class="text-sm font-medium text-gray-500 mb-2">Question 1 / 10</p>
+                    <div class="progress-bar-bg">
+                        <div id="progress-bar" class="progress-bar-fg" style="width: 10%;"></div>
+                    </div>
+                </div>
+                <h2 id="scenario-text" class="text-xl font-semibold text-gray-800 mb-6">Scenario text goes here.</h2>
             </div>
-            <div id="skill-breakdown" class="space-y-4">
-                <!-- Skill descriptions will be dynamically inserted here -->
+            <div id="options-container" class="scrolling-content flex-grow min-h-0 overflow-y-auto space-y-4 pr-2">
+                </div>
+        </div>
+
+        <div id="results-screen" class="card hidden w-full">
+            <div class="flex-shrink-0 text-center">
+                <h1 id="results-title" class="text-3xl font-bold text-gray-800 mb-4">Your Change Agility Profile</h1>
+                <p class="text-gray-600 mb-8">Here is a breakdown of your skills based on your responses. This profile highlights your strengths in navigating change.</p>
             </div>
-            <button id="restart-btn" class="mt-8 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-transform transform hover:scale-105">Play Again</button>
+            <div class="scrolling-content flex-grow min-h-0 overflow-y-auto pr-2">
+                <div class="w-full min-h-[320px] md:min-h-[384px] mx-auto mb-8">
+                    <canvas id="results-chart"></canvas>
+                </div>
+                <div id="skill-breakdown" class="space-y-4">
+                    </div>
+            </div>
+            <div class="mt-auto flex-shrink-0">
+                <button id="restart-btn" class="mt-8 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-transform transform hover:scale-105">Play Again</button>
+            </div>
         </div>
     </div>
 
 <script>
+    // --- (JavaScript is unchanged) ---
     // --- DOM Elements ---
     const welcomeScreen = document.getElementById('welcome-screen');
     const gameScreen = document.getElementById('game-screen');
@@ -126,11 +156,11 @@
     };
 
     const SKILL_DESCRIPTIONS = {
-        [SKILLS.ADAPTABILITY]: 'You readily adjust your approach and mindset to fit new situations, embracing shifts in priorities and processes.',
-        [SKILLS.RESILIENCE]: 'You maintain a positive attitude and bounce back quickly from setbacks, viewing challenges as opportunities for growth.',
-        [SKILLS.CHANGE_LEADERSHIP]: 'You effectively guide and influence others through transitions, building consensus and motivating your team.',
-        [SKILLS.LEARNING_AGILITY]: 'You are proactive about acquiring new knowledge and skills, actively seeking feedback and learning from experiences.',
-        [SKILLS.INNOVATION]: 'You think outside the box to generate novel ideas and creative solutions to complex problems.'
+        [SKILLS.ADAPTABILITY]: 'Having strength in this skill means readily adjusting your approach and mindset to fit new situations, embracing shifts in priorities and processes.',
+        [SKILLS.RESILIENCE]: 'Having strength in this skill means maintaining a positive attitude and bouncing back quickly from setbacks, and viewing challenges as opportunities for growth.',
+        [SKILLS.CHANGE_LEADERSHIP]: 'Having strength in this skill means effectively guiding and influencing others through transitions, building consensus and motivating others.',
+        [SKILLS.LEARNING_AGILITY]: 'Having strength in this skill means that being proactive about acquiring new knowledge and skills, actively seek feedback and learning from experiences.',
+        [SKILLS.INNOVATION]: 'Having strength in this skill means thinking outside the box to generate novel ideas and creative solutions to complex problems.'
     };
     
     const questions = [
@@ -271,14 +301,17 @@
             return;
         }
 
+        // Update progress
         const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
         questionCounter.textContent = `Question ${currentQuestionIndex + 1} / ${questions.length}`;
         progressBar.style.width = `${progress}%`;
 
+        // Display question
         const question = questions[currentQuestionIndex];
         scenarioText.textContent = question.scenario;
         optionsContainer.innerHTML = '';
         
+        // Shuffle options to avoid order bias
         const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
 
         shuffledOptions.forEach(option => {
@@ -291,12 +324,15 @@
     }
 
     function selectOption(skill, selectedButton) {
+        // Increment score
         scores[skill]++;
         
+        // Visual feedback
         const buttons = optionsContainer.querySelectorAll('.btn');
-        buttons.forEach(btn => btn.disabled = true);
+        buttons.forEach(btn => btn.disabled = true); // Disable all buttons
         selectedButton.classList.add('selected');
 
+        // Move to next question after a short delay
         setTimeout(() => {
             currentQuestionIndex++;
             showQuestion();
@@ -309,29 +345,6 @@
         resultsTitle.textContent = `${playerName}'s Change Agility Profile`;
         renderChart();
         renderSkillBreakdown();
-
-        // --- EDITED SECTION: Communicate with Captivate ---
-        try {
-            // Check if the game is running inside a Captivate web object
-            if (window.parent && window.parent.cp) {
-                // This is the key command to tell Captivate the user has "passed".
-                // Captivate will then report this status to the LMS.
-                // 1 = Pass, 0 = Fail
-                window.parent.cp.setVariableValue('cpQuizInfoPassFail', 1);
-
-                // You can also set a score if your LMS uses it for completion.
-                // For example, setting a score of 100.
-                window.parent.cp.setVariableValue('cpQuizInfoPointsscored', 100);
-
-                console.log("Sent 'Pass' status and score to Captivate.");
-
-            } else {
-                console.log("Captivate environment not found. Running in standalone mode.");
-            }
-        } catch (e) {
-            console.error("Error communicating with Captivate:", e);
-        }
-        // --- END EDITED SECTION ---
     }
     
     function renderChart() {
@@ -379,7 +392,7 @@
                             }
                         },
                         min: 0,
-                        max: Math.max(...Object.values(scores), 3)
+                        max: Math.max(...Object.values(scores), 3) // Ensure scale is at least 3
                     }
                 },
                 plugins: {
