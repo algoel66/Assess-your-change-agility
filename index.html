@@ -8,13 +8,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* NEW: Rule to prevent page-level scrolling when embedded */
         html, body {
-            overflow: hidden; /* Prevents the main scrollbar */
-            height: 100%;     /* Ensures the body fits the container */
+            overflow: hidden;
+            height: 100%;
             margin: 0;
             padding: 0;
-            background-color: #f3f4f6; /* Set background color here */
+            background-color: #f3f4f6;
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -27,7 +26,7 @@
             transition: all 0.3s ease-in-out;
             display: flex;
             flex-direction: column;
-            max-height: 95vh; 
+            /* MODIFICATION: Removed max-height. The parent container will now control the height. */
         }
         .btn {
             display: block;
@@ -78,9 +77,9 @@
         }
     </style>
 </head>
-<body class="flex items-center justify-center p-4">
+<body class="flex items-center justify-center">
 
-    <div id="game-container" class="max-w-2xl w-full h-full flex items-center">
+    <div id="game-container" class="max-w-2xl w-full h-full flex items-center p-4">
         
         <div id="welcome-screen" class="card w-full">
             <div class="flex-shrink-0">
@@ -132,8 +131,7 @@
     </div>
 
 <script>
-    // --- (JavaScript is unchanged) ---
-    // --- DOM Elements ---
+    // The JavaScript does not need any changes.
     const welcomeScreen = document.getElementById('welcome-screen');
     const gameScreen = document.getElementById('game-screen');
     const resultsScreen = document.getElementById('results-screen');
@@ -148,8 +146,6 @@
     const resultsChartCanvas = document.getElementById('results-chart');
     const resultsTitle = document.getElementById('results-title');
     const skillBreakdownContainer = document.getElementById('skill-breakdown');
-
-    // --- Game Data ---
     const SKILLS = {
         ADAPTABILITY: 'Adaptability',
         RESILIENCE: 'Resilience',
@@ -157,7 +153,6 @@
         LEARNING_AGILITY: 'Learning Agility',
         INNOVATION: 'Innovation'
     };
-
     const SKILL_DESCRIPTIONS = {
         [SKILLS.ADAPTABILITY]: 'Having strength in this skill means readily adjusting your approach and mindset to fit new situations, embracing shifts in priorities and processes.',
         [SKILLS.RESILIENCE]: 'Having strength in this skill means maintaining a positive attitude and bouncing back quickly from setbacks, and viewing challenges as opportunities for growth.',
@@ -165,7 +160,6 @@
         [SKILLS.LEARNING_AGILITY]: 'Having strength in this skill means that being proactive about acquiring new knowledge and skills, actively seek feedback and learning from experiences.',
         [SKILLS.INNOVATION]: 'Having strength in this skill means thinking outside the box to generate novel ideas and creative solutions to complex problems.'
     };
-    
     const questions = [
         {
             scenario: "Your team's long-term project is suddenly canceled due to a shift in company strategy. How do you react?",
@@ -258,15 +252,10 @@
             ]
         }
     ];
-
-    // --- Game State ---
     let currentQuestionIndex = 0;
     let scores = {};
     let chartInstance = null;
     let playerName = '';
-
-    // --- Functions ---
-
     function initializeScores() {
         scores = {
             [SKILLS.ADAPTABILITY]: 0,
@@ -276,7 +265,6 @@
             [SKILLS.INNOVATION]: 0
         };
     }
-
     function startGame() {
         playerName = nameInput.value.trim();
         if (!playerName) {
@@ -284,7 +272,6 @@
             return;
         }
         nameError.classList.add('hidden');
-
         currentQuestionIndex = 0;
         initializeScores();
         welcomeScreen.classList.add('hidden');
@@ -292,31 +279,22 @@
         gameScreen.classList.remove('hidden');
         showQuestion();
     }
-    
     function restartGame() {
         resultsScreen.classList.add('hidden');
         welcomeScreen.classList.remove('hidden');
     }
-
     function showQuestion() {
         if (currentQuestionIndex >= questions.length) {
             showResults();
             return;
         }
-
-        // Update progress
         const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
         questionCounter.textContent = `Question ${currentQuestionIndex + 1} / ${questions.length}`;
         progressBar.style.width = `${progress}%`;
-
-        // Display question
         const question = questions[currentQuestionIndex];
         scenarioText.textContent = question.scenario;
         optionsContainer.innerHTML = '';
-        
-        // Shuffle options to avoid order bias
         const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
-
         shuffledOptions.forEach(option => {
             const button = document.createElement('button');
             button.className = 'btn';
@@ -325,23 +303,16 @@
             optionsContainer.appendChild(button);
         });
     }
-
     function selectOption(skill, selectedButton) {
-        // Increment score
         scores[skill]++;
-        
-        // Visual feedback
         const buttons = optionsContainer.querySelectorAll('.btn');
-        buttons.forEach(btn => btn.disabled = true); // Disable all buttons
+        buttons.forEach(btn => btn.disabled = true);
         selectedButton.classList.add('selected');
-
-        // Move to next question after a short delay
         setTimeout(() => {
             currentQuestionIndex++;
             showQuestion();
         }, 1000);
     }
-
     function showResults() {
         gameScreen.classList.add('hidden');
         resultsScreen.classList.remove('hidden');
@@ -349,7 +320,6 @@
         renderChart();
         renderSkillBreakdown();
     }
-    
     function renderChart() {
         const data = {
             labels: Object.values(SKILLS),
@@ -365,7 +335,6 @@
                 borderWidth: 2
             }]
         };
-
         const config = {
             type: 'radar',
             data: data,
@@ -395,7 +364,7 @@
                             }
                         },
                         min: 0,
-                        max: Math.max(...Object.values(scores), 3) // Ensure scale is at least 3
+                        max: Math.max(...Object.values(scores), 3)
                     }
                 },
                 plugins: {
@@ -405,23 +374,18 @@
                 }
             }
         };
-
         if (chartInstance) {
             chartInstance.destroy();
         }
         chartInstance = new Chart(resultsChartCanvas, config);
     }
-
     function renderSkillBreakdown() {
         skillBreakdownContainer.innerHTML = '';
         const sortedSkills = Object.entries(scores).sort(([,a],[,b]) => b-a);
-        
         sortedSkills.forEach(([skill, score]) => {
             const skillElement = document.createElement('div');
             skillElement.className = 'p-4 border rounded-lg bg-gray-50';
-            
             const scoreDisplay = `(${score} point${score !== 1 ? 's' : ''})`;
-
             skillElement.innerHTML = `
                 <h3 class="font-bold text-lg text-gray-800">${skill} <span class="text-sm font-medium text-gray-500">${scoreDisplay}</span></h3>
                 <p class="text-gray-600 mt-1">${SKILL_DESCRIPTIONS[skill]}</p>
@@ -429,11 +393,8 @@
             skillBreakdownContainer.appendChild(skillElement);
         });
     }
-
-    // --- Event Listeners ---
     startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', restartGame);
-
 </script>
 </body>
 </html>
