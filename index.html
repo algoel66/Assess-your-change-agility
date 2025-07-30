@@ -8,13 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        html, body {
-            overflow: hidden;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #f3f4f6;
-        }
+        /* MODIFICATION: Removed the rule that hid page overflow */
         body {
             font-family: 'Inter', sans-serif;
         }
@@ -59,24 +53,11 @@
             height: 0.5rem;
             transition: width 0.5s ease-in-out;
         }
-        .scrolling-content::-webkit-scrollbar {
-            width: 8px;
-        }
-        .scrolling-content::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .scrolling-content::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 10px;
-        }
-        .scrolling-content::-webkit-scrollbar-thumb:hover {
-            background: #9ca3af;
-        }
     </style>
 </head>
-<body class="flex items-center justify-center">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 
-    <div id="game-container" class="max-w-2xl w-full h-full flex items-center p-4">
+    <div id="game-container" class="max-w-2xl w-full my-auto">
         
         <div id="welcome-screen" class="card w-full">
             <h1 class="text-2xl text-center font-bold text-gray-800 mb-3">Change Agility Challenge</h1>
@@ -101,28 +82,22 @@
                 </div>
         </div>
 
-        <div id="results-screen" class="card hidden w-full flex flex-col max-h-[90vh]">
-            <div class="flex-shrink-0">
-                <h1 id="results-title" class="text-2xl font-bold text-gray-800 mb-2 text-center">Your Change Agility Profile</h1>
-                <p class="text-sm text-gray-600 mb-4 text-center">Here is a breakdown of your skills based on your responses. This profile highlights your strengths in navigating change.</p>
+        <div id="results-screen" class="card hidden w-full">
+            <h1 id="results-title" class="text-2xl font-bold text-gray-800 mb-2 text-center">Your Change Agility Profile</h1>
+            <p class="text-sm text-gray-600 mb-4 text-center">Here is a breakdown of your skills based on your responses. This profile highlights your strengths in navigating change.</p>
+            
+            <div class="w-full h-64 mx-auto mb-6">
+                <canvas id="results-chart"></canvas>
             </div>
             
-            <div class="scrolling-content flex-grow min-h-0 overflow-y-auto pr-2">
-                <div class="w-full h-80 md:h-96 mx-auto mb-8">
-                    <canvas id="results-chart"></canvas>
+            <div id="skill-breakdown" class="space-y-3">
                 </div>
-                <div id="skill-breakdown" class="space-y-3">
-                    </div>
-            </div>
 
-            <div class="mt-auto flex-shrink-0 pt-4">
-                <button id="restart-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg text-base transition-transform transform hover:scale-105">Play Again</button>
-            </div>
+            <button id="restart-btn" class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg text-base transition-transform transform hover:scale-105">Play Again</button>
         </div>
     </div>
 
 <script>
-    // --- DOM Elements ---
     const welcomeScreen = document.getElementById('welcome-screen');
     const gameScreen = document.getElementById('game-screen');
     const resultsScreen = document.getElementById('results-screen');
@@ -341,7 +316,7 @@
                         angleLines: { color: '#e5e7eb' },
                         grid: { color: '#e5e7eb' },
                         pointLabels: {
-                            font: { size: 14, weight: '500' },
+                            font: { size: 12, weight: '500' }, // Kept font relatively small for smaller chart
                             color: '#374151'
                         },
                         ticks: {
@@ -360,16 +335,13 @@
         chartInstance = new Chart(resultsChartCanvas, config);
     }
 
-    // MODIFICATION: Skill breakdown has compact styling but full content
     function renderSkillBreakdown() {
         skillBreakdownContainer.innerHTML = '';
         const sortedSkills = Object.entries(scores).sort(([, a], [, b]) => b - a);
         sortedSkills.forEach(([skill, score]) => {
             const skillElement = document.createElement('div');
-            // Using smaller padding and rounded corners
             skillElement.className = 'p-3 border rounded-lg bg-gray-50';
             const scoreDisplay = `(${score} point${score !== 1 ? 's' : ''})`;
-            // Using smaller font sizes
             skillElement.innerHTML = `
                 <h3 class="font-semibold text-base text-gray-800">${skill} <span class="text-xs font-medium text-gray-500">${scoreDisplay}</span></h3>
                 <p class="text-sm text-gray-600 mt-1">${SKILL_DESCRIPTIONS[skill]}</p>
@@ -379,7 +351,7 @@
     }
 
     startBtn.addEventListener('click', startGame);
-    restartBtn.addEventListener('click', restartBttn);
+    restartBtn.addEventListener('click', restartGame);
 </script>
 </body>
 </html>
