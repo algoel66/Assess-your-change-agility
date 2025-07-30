@@ -314,9 +314,17 @@
         try {
             // Check if the game is running inside a Captivate web object
             if (window.parent && window.parent.cp) {
-                // Set the Captivate variable to 1 to signify completion
-                window.parent.cp.setVariableValue('v_WebObjectComplete', 1);
-                console.log("Successfully set Captivate variable 'v_WebObjectComplete' to 1.");
+                // This is the key command to tell Captivate the user has "passed".
+                // Captivate will then report this status to the LMS.
+                // 1 = Pass, 0 = Fail
+                window.parent.cp.setVariableValue('cpQuizInfoPassFail', 1);
+
+                // You can also set a score if your LMS uses it for completion.
+                // For example, setting a score of 100.
+                window.parent.cp.setVariableValue('cpQuizInfoPointsscored', 100);
+
+                console.log("Sent 'Pass' status and score to Captivate.");
+
             } else {
                 console.log("Captivate environment not found. Running in standalone mode.");
             }
@@ -413,4 +421,3 @@
 </script>
 </body>
 </html>
-
